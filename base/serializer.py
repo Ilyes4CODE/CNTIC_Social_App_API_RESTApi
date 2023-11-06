@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Post,Comment
+from .models import Post,Comment,Profile
 
 class PostSerializer(serializers.ModelSerializer):
     class Meta:
@@ -21,3 +21,16 @@ class CommentSerializer(serializers.ModelSerializer):
         model = Comment
         #fields = ('id','author','content','parent_post','created_time','likers','dislikers')
         fields = '__all__'
+
+
+class ProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Profile
+        fields = ('id','user','name','picture','email','phone')
+        extra_kwargs = {
+            'name' : {'required': True },
+            'user' : {'required': True },
+            'picture' : {'required': False },
+            'email' :{'required': True },
+            'phone' : {'required': False},
+        }

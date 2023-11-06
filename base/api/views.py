@@ -9,8 +9,8 @@ from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth.hashers import make_password
 from rest_framework import status
 from django.contrib.auth.models import User
-from base.models import Post
-from base.serializer import PostSerializer
+from base.models import Post,Profile
+from base.serializer import PostSerializer,ProfileSerializer
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
     @classmethod
     def get_token(cls, user):
@@ -46,13 +46,14 @@ def register(request):
     print(data)
     if user.is_valid():
         if not User.objects.filter(username=data['email']).exists():
-            User.objects.create(
+            profile = User.objects.create(
                 first_name = data['first_name'],
                 last_name = data['last_name'],
                 email = data['email'],
                 username = data['email'],
                 password = make_password(data['password'])
             )
+            Profile.objects.create(user=profile,email=data['email'],name=data['first_name'] + ' ' + data['last_name'])
             return Response({'Details':'Account Created Successfully'},status=status.HTTP_201_CREATED)
         else : 
             return Response({'Error':'Account Already Exists'},status=status.HTTP_400_BAD_REQUEST)
