@@ -1,11 +1,11 @@
 from django.shortcuts import render,get_object_or_404
-from .serializer import PostSerializer,CommentSerializer
+from .serializer import PostSerializer,CommentSerializer,ProfileSerializer
 from rest_framework.response import Response
 from .models import Post,Comment
 from rest_framework.decorators import api_view,permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
-
+from .models import Profile
 
 @api_view(['GET'])
 def ApiOverview(request):
@@ -30,6 +30,8 @@ def Posts(request):
     post = Post.objects.all()
     serializer = PostSerializer(post,many=True)
     return Response({"Posts" : serializer.data}) 
+
+
 
 
 @api_view(['GET'])

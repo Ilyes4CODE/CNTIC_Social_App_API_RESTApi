@@ -76,6 +76,15 @@ def current_post_user(request):
     serializer = PostSerializer(posts,many=True)
     return Response({f"{user} Posts":serializer.data})
 
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def user_profile(request):
+    user = request.user
+    profile = Profile.objects.get(user=user)
+    serializer = ProfileSerializer(profile,many=False)
+    return Response({"Profile":serializer.data})
+
+
 
     
 

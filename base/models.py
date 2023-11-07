@@ -14,7 +14,7 @@ class Profile(models.Model):
     reset_password_expire = models.DateTimeField(null=True, blank=True)
 
     def __str__(self):
-        return self.name
+        return self.user
 
 class Comment(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE,blank=True)
