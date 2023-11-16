@@ -11,14 +11,17 @@ from rest_framework import status
 from django.contrib.auth.models import User
 from base.models import Post,Profile
 from base.serializer import PostSerializer,ProfileSerializer
+from django.contrib.auth.models import Group
+from rest_framework import serializers
+import json
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
     @classmethod
     def get_token(cls, user):
         token = super().get_token(user)
-
         # Add custom claims
         token['username'] = user.username
         token['email'] = user.email
+        token['groups'] = user.groups.name
         # ...
 
         return token
@@ -43,7 +46,6 @@ def Routes(request):
 def register(request):
     data = request.data
     user = SignUpserializer(data=data)
-    print(data)
     if user.is_valid():
         if not User.objects.filter(username=data['email']).exists():
             profile = User.objects.create(
@@ -54,6 +56,8 @@ def register(request):
                 password = make_password(data['password'])
             )
             Profile.objects.create(user=profile,email=data['email'],name=data['first_name'] + ' ' + data['last_name'])
+            group = Group.objects.get(name="User")
+            profile.groups.add(group)
             return Response({'Details':'Account Created Successfully'},status=status.HTTP_201_CREATED)
         else : 
             return Response({'Error':'Account Already Exists'},status=status.HTTP_400_BAD_REQUEST)
